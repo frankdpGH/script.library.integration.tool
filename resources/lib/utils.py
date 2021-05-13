@@ -611,7 +611,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         for item in listofitems:
             if item and item['filetype'] == 'file':
                 yield item
-                
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
