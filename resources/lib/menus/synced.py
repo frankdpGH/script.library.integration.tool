@@ -183,7 +183,7 @@ class SyncedMenu(object):
                 ).returasjson(), 'movie')
             utils.notification('%s: %s' % (
                 STR_MOVIE_STAGED,
-                utils.title_with_color(title.encode('utf-8'), year)
+                utils.title_with_color(title, year)
             ))
 
     @utils.logged_function
