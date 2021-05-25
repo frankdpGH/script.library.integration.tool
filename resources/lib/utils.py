@@ -582,7 +582,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-    if not (results.has_key('result') and results['result'].has_key('files')):
+    if 'result' not in results and 'files' not in results:
         yield []
     try:
         listofitems = list(list_reorder(
