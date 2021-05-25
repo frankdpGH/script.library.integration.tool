@@ -318,7 +318,6 @@ class DatabaseHandler(object):
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
-        entries = []
         # TODO: check this isinstance
         for item in [status] if isinstance(status, str) else status:
             if mediatype == 'movie':
@@ -339,13 +338,7 @@ class DatabaseHandler(object):
                         )
             )
             ret = self.cur.execute(sql_comm).fetchone()
-
-            if ret > 0:
-                entries += ret
-        if entries:
-            return True
-        else:
-            return False
+        return True if ret else False
 
     # @utils.logged_function
     # def remove_all_content_items(self, status, mediatype):
