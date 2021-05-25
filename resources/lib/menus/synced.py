@@ -252,7 +252,8 @@ class SyncedMenu(object):
                 items_to_stage += 1
                 xbmc.sleep(300)
             except TypeError:
-                utils.getlocalizedstring(32166),
+                utils.notification(
+                    utils.getlocalizedstring(32166),
                     4000
                 )
         if num_already_staged > 0 or num_already_managed > 0:
