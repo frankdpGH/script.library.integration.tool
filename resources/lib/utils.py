@@ -14,6 +14,7 @@ import simplejson as json
 
 import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
+import xbmcgui # pylint: disable=import-error
 
 # Get file system tools depending on platform
 if osname == 'posix':
