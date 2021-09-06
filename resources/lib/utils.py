@@ -30,6 +30,10 @@ from resources.lib.filesystem import mkdir
 from resources.lib.dialog_select import Select
 from resources.lib.version import check_version_file
 
+from resources.lib.streaming.detector import StreamingInfoDetector
+
+infodetector = StreamingInfoDetector()
+
 
 if USING_CUSTOM_MANAGED_FOLDER:
     MANAGED_FOLDER = xbmcvfs.validatePath(ADDON.getSetting('managed_folder'))
@@ -525,8 +529,15 @@ def load_directory_items(progressdialog, _path, recursive=False,
             SKIP_STRINGS
         )
         )
+        # results = list(
+        #     list_reorder(
+        #         list(crunchyroll_language_menu(results)),
+        #         showtitle=showtitle,
+        #         sync_type=sync_type
+        #     )
+        # )
         results = list(
-            list_reorder(
+            infodetector.loop(
                 list(crunchyroll_language_menu(results)),
                 showtitle=showtitle,
                 sync_type=sync_type

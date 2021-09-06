@@ -1,0 +1,1 @@
+"""Streaminginfo module."""
