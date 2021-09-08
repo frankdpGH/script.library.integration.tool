@@ -221,8 +221,10 @@ class SyncedMenu():
             _path=file,
             allow_directories=True,
             recursive=True,
+            # >>> TODO: future, remove this
             year=year,
             showtitle=title,
+            # >>> TODO: future, remove this
             sync_type='tvshow'
         )
         )

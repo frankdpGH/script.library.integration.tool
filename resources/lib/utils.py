@@ -536,9 +536,10 @@ def load_directory_items(progressdialog, _path, recursive=False,
         #         sync_type=sync_type
         #     )
         # )
+        results = list(crunchyroll_language_menu(results))
         results = list(
             infodetector.loop(
-                list(crunchyroll_language_menu(results)),
+                results,
                 showtitle=showtitle,
                 sync_type=sync_type
             )
@@ -560,14 +561,18 @@ def load_directory_items(progressdialog, _path, recursive=False,
             if item:
                 yield item
         else:
+            # >>> TODO: future, remove this
             if season:
                 item['season'] = season
             if year:
                 item['year'] = year
+            # >>> TODO: future, remove this
             # if content is a directory will be added to directories list
             if item['filetype'] == 'directory':
                 if re_search(item['type'], ['season', 'tvshow']):
+                    # >>> TODO: future, remove this
                     showtitle = item['showtitle']
+                    # >>> TODO: future, remove this
                     progressdialog.update_progressdialog(
                         index / len(results),
                         'Coletando itens no diretorio!\n%s' % item['label']
@@ -581,12 +586,15 @@ def load_directory_items(progressdialog, _path, recursive=False,
                     index / len(results),
                     'Processando items:\n%s' % item['label']
                 )
+                # >>> TODO: future, remove this
                 item['showtitle'] = showtitle
+                # >>> TODO: future, remove this
                 if item:
                     yield item
     if recursive and directories:
         for _dir in directories:
             # close the progress bar during JSONRPC process
+            # >>> TODO: future, remove this
             try:
                 title = _dir['showtitle']
                 recursive = True
@@ -602,6 +610,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 recursive = True
             except KeyError:
                 year = False
+            # >>> TODO: future, remove this
             new_items = list(
                 load_directory_items(
                     progressdialog=progressdialog,
@@ -609,9 +618,11 @@ def load_directory_items(progressdialog, _path, recursive=False,
                     recursive=recursive,
                     allow_directories=allow_directories,
                     depth=depth + 1,
+                    # >>> TODO: future, remove this
                     showtitle=title,
                     season=season,
                     year=year,
+                    # >>> TODO: future, remove this
                     sync_type=sync_type
                 )
             )

@@ -68,7 +68,7 @@ def amazon_method(self, item):
             if item["episode"] == -1:
                 if not is_season(item['label']) or item["type"] == "tvshow":
                     item['type'] = 'tvshow'
-                    if item['label']:
+                    if item['label'] and not item['showtitle']:
                         item['showtitle'] = item['label']
                         self.showtitle = item['label']
                     else:
@@ -91,6 +91,7 @@ def amazon_method(self, item):
             if item['episode'] > -1:
                 if item['season'] > -1:
                     if item['type'] == 'episode':
+                        item['showtitle'] = self.showtitle
                         item['episode'] = self.epindex
             else:
                 # For now, categorize as trailher, ignore items like Extra / Trailer
@@ -148,7 +149,7 @@ def netflix_method(self, item):
                         if item['year'] > 1600:
                             self.year = item['year']
 
-def hbomax_method(_, item):
+def hbomax_method(self, item):
     """Categorize HBO Max info.
 
     Args:
@@ -166,11 +167,11 @@ def hbomax_method(_, item):
                         del item['episode']
                         del item['season']
             # HBOMAX SEASON DIRECTORY
-            elif item['type'] == 'unknown':
+            if item['type'] == 'unknown':
                 if is_season(item['label']):
                     del item['episode']
                     item['type'] = 'season'
-                    item['season'] = item['number']
+                    item['season'] = self.epindex
 
 def crackle_method(_, item):
     """Categorize Crackle info.

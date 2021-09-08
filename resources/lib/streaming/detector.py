@@ -3,7 +3,7 @@
 """Module with class to with methods to detect streaming info."""
 
 from resources.lib.log import log_msg
-from resources.lib.misc import re_search, savetojson
+from resources.lib.misc import is_season, re_search, savetojson
 
 from resources.lib.streaming.services import crunchyroll_method
 from resources.lib.streaming.services import amazon_method
@@ -18,23 +18,21 @@ class StreamingInfoDetector():
     """StreamingInfoDetector class to detect/categorize streaming info."""
 
     def __init__(self):
-        self.year = 0
+        self.year = None
         self.epindex = None
         self.showtitle = None
 
     def loop(self, itens, sync_type, showtitle=False):
         """Loop function to get info from jsonRPC data."""
-        self.showtitle = showtitle
+        savetojson(itens)
+        try:
+            if not self.year:
+                self.year = min([x['year'] for x in itens if is_season(x['label'])])
+                log_msg('----->>>>> %s ----> %s' % (self.year, itens))
+        except ValueError:
+            pass
         for index, item in enumerate(itens):
             self.epindex = index + 1
-            if not self.showtitle:
-                if item['showtitle']:
-                    self.showtitle = item['showtitle']
-            if self.year == 0:
-                self.year = item['year']
-            elif item['year'] < self.year != 0:
-                self.year = item['year']
-            # TODO: check if logic is real necessary, test is for all languages eficient
             if sync_type != 'all_items':
                 if sync_type == 'movie' and item['type'] == 'movie':
                     pass
@@ -56,12 +54,12 @@ class StreamingInfoDetector():
                 if item['filetype'] == 'file' and item['type'] == 'movie':
                     self.movies_method(item)
                 else:
-                    if '' != item['showtitle'] != self.showtitle:
-                        # updates self.showtitle when item['showtitle']
-                        # changes and is not empty
+                    if is_season(item['label']):
+                        if item['showtitle'] and not self.showtitle:
+                            self.showtitle = item['showtitle']
+                    if self.showtitle != item['showtitle'] and item['showtitle']:
                         self.showtitle = item['showtitle']
-                        # reset self.year if item['showtitle'] is changed
-                        self.year = 0
+                        item['year'] = None
                     crunchyroll_method(self, item)
                     amazon_method(self, item)
                     disney_method(self, item)
@@ -69,14 +67,10 @@ class StreamingInfoDetector():
                     hbomax_method(self, item)
                     crackle_method(self, item)
                     paramountplus_method(self, item)
-                    if not item['showtitle']:
-                        item['showtitle'] = self.showtitle
-            except KeyError:
-                pass
-            if item['year'] == 1601:
-                item['year'] = 0
-            if item['year'] > self.year and item['year'] != 0:
-                item['year'] = self.year
+                    if self.year:
+                        item['year'] = self.year
+            except KeyError as error:
+                log_msg("INFO DETETOR LOOP: %s, item: %s" % (error, item))
             yield item
 
     @staticmethod
